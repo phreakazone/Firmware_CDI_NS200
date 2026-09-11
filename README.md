@@ -100,7 +100,7 @@ sebelum mengaktifkan output.
 Perbaikan di R8: Nama BLE yang disiarkan sebelumnya terpotong menjadi `NS200-CD` 
 demi muat dalam batas legacy advertising 31 byte bersama UUID layanan 128-bit. 
 Diperbaiki dengan memindahkan UUID layanan 128-bit ke paket Scan Response terpisah, 
-sehingga nama lengkap `NS200-CDI-R8` kini muat penuh di paket ADV_IND utama.
+sehingga nama lengkap `NS200-CDI-R7` kini muat penuh di paket ADV_IND utama.
 
 ---
 
