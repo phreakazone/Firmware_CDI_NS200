@@ -105,6 +105,7 @@ sehingga nama lengkap `NS200-CDI-R8` kini muat penuh di paket ADV_IND utama.
 ---
 
 # Release note R7.2 (legacy)
+https://github.com/phreakazone/Firmware_CDI_NS200/releases/tag/r7
 
 Artefak R7.2 dibangun dari source paket dengan GNU Arm GCC 13.2.1.
 Build 69/69 dan link berhasil: text 53.220, data 208, bss 13.175 byte.
