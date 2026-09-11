@@ -5,7 +5,7 @@
 
 static cdi_r5_engine_config_t engine(bool arm, bool pro)
 {
-    cdi_r5_engine_config_t e={.timer_hz=4000000u,.pulses_per_revolution=1u,.trigger_angle_cdeg=6000u,.side_offset_cdeg=100,.gate_pulse_us=80u,.calibrated=true,.physical_arm=arm,.pro_jumper=pro,.center_enabled=true,.side_enabled=true};
+    cdi_r5_engine_config_t e={.timer_hz=4000000u,.pulses_per_revolution=1u,.trigger_angle_cdeg=6000u,.side_offset_cdeg=100,.gate_pulse_us=80u,.calibrated=true,.output_permission=arm,.pro_enabled=pro,.center_enabled=true,.side_enabled=true};
     return e;
 }
 
@@ -16,7 +16,7 @@ static void test_defaults_crc_and_lock(void)
     assert(cdi_r5_store_validate(&image) == CDI_R5_OK);
     assert(image.active_slot == 1u);
     assert(image.slots[0].hv_target_volts == 285u);
-    assert(image.slots[3].hv_target_volts == 290u);
+    assert(image.slots[3].hv_target_volts == 345u);
     assert(image.setup.stage == CDI_R7_STAGE_NEW);
     assert(cdi_r5_map_validate(&image.slots[3], false) == CDI_R5_ERR_PRO_LOCKED);
     image.slots[0].rpm_limit++;
@@ -34,7 +34,7 @@ static void test_schedule_and_physical_arm(void)
     cdi_r5_load_defaults(&image);
     assert(cdi_r5_make_decision(&e, &image.slots[1], 160000u, 500u,
                                 &phase, &d) == CDI_R5_ERR_DISARMED);
-    e.physical_arm = true;
+    e.output_permission = true;
     assert(cdi_r5_make_decision(&e, &image.slots[1], 160000u, 500u,
                                 &phase, &d) == CDI_R5_OK);
     assert(d.rpm == 1500u && d.hv_target_volts == 285u);

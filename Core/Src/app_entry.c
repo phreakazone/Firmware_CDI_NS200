@@ -32,6 +32,7 @@
 #include "dbg_trace.h"
 #include "shci.h"
 #include "otp.h"
+#include "cdi_board.h"
 
 /* Private includes -----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -640,6 +641,7 @@ void shci_cmd_resp_wait(uint32_t timeout)
 /* USER CODE BEGIN FD_WRAP_FUNCTIONS */
 void HAL_GPIO_EXTI_Callback( uint16_t GPIO_Pin )
 {
+  if (R5_GpioExtiCallback(GPIO_Pin)) return;
   switch (GPIO_Pin)
   {
     case BUTTON_SW1_PIN:

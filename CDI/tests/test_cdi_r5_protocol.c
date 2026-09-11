@@ -53,13 +53,13 @@ int main(void)
     frame("6,LOAD,3", in, sizeof(in));
     n = cdi_r5_protocol_handle(&p, in, out, sizeof(out));
     assert(n > 0u && strstr(out, "PRO_LOCKED") != NULL);
-    p.pro_jumper = true;
+    p.pro_enabled = true;
     n = cdi_r5_protocol_handle(&p, in, out, sizeof(out));
     assert(n > 0u && strstr(out, "ACK,LOAD") != NULL);
     in[strlen(in) - 1u] = in[strlen(in) - 1u] == '0' ? '1' : '0';
     n = cdi_r5_protocol_handle(&p, in, out, sizeof(out));
     assert(n > 0u && strstr(out, "ERR,CRC") != NULL);
-    p.pro_jumper=false;p.hv_enabled=false;p.hv_center=0;p.hv_side=0;p.rpm=0;p.pickup_quality=20;
+    p.pro_enabled=false;p.hv_enabled=false;p.hv_center=0;p.hv_side=0;p.rpm=0;p.pickup_quality=20;
     cdi_r5_protocol_set_persist(&p,persist_fail,NULL);
     frame("7,SETUP,EDGE,RISING",in,sizeof(in));assert(cdi_r5_protocol_handle(&p,in,out,sizeof(out))>0&&strstr(out,"ERR,FLASH")&&store.setup.pickup_edge==CDI_R7_EDGE_FALLING&&cdi_r5_store_validate(&store)==CDI_R5_OK);
     cdi_r5_protocol_set_persist(&p,persist_ok,NULL);
@@ -70,9 +70,33 @@ int main(void)
     frame("10,SETUP,STROBE,ON",in,sizeof(in));assert(cdi_r5_protocol_handle(&p,in,out,sizeof(out))>0&&p.strobe_active);
     frame("11,SETUP,OFFSET,7200",in,sizeof(in));assert(cdi_r5_protocol_handle(&p,in,out,sizeof(out))>0);p.strobe_samples=12;
     frame("12,SETUP,SAVE_TDC",in,sizeof(in));assert(cdi_r5_protocol_handle(&p,in,out,sizeof(out))>0&&store.setup.trigger_angle_cdeg==7200);
-    frame("13,SETUP,FIRST_START",in,sizeof(in));assert(cdi_r5_protocol_handle(&p,in,out,sizeof(out))>0&&store.setup.center_enabled&&!store.setup.side_enabled);p.first_start_seconds=3;
+    frame("13,SETUP,FIRST_START",in,sizeof(in));assert(cdi_r5_protocol_handle(&p,in,out,sizeof(out))>0&&store.setup.center_enabled&&!store.setup.side_enabled);store.setup.first_start_proven=1;
     frame("14,SETUP,READY,CENTER",in,sizeof(in));assert(cdi_r5_protocol_handle(&p,in,out,sizeof(out))>0&&store.setup.stage==CDI_R7_STAGE_READY);
     p.first_start_seconds=0;frame("15,SETUP,READY,THREE,500",in,sizeof(in));assert(cdi_r5_protocol_handle(&p,in,out,sizeof(out))>0&&store.setup.side_enabled&&store.setup.side_offset_cdeg==500);
+    {
+        cdi_r8_oem_learner_t learner;uint32_t tick=1000000u,period=160000u;unsigned i;
+        cdi_r5_load_defaults(&store);cdi_r5_protocol_init(&p,&store);
+        cdi_r5_protocol_set_persist(&p,persist_ok,NULL);
+        cdi_r8_oem_learn_init(&learner,4000000u);
+        cdi_r8_protocol_attach_oem_learner(&p,&learner);
+        p.hv_center=p.hv_side=0u;p.hv_enabled=false;p.rpm=0u;
+        frame("20,MODE,OEM_LEARN",in,sizeof(in));
+        assert(cdi_r5_protocol_handle(&p,in,out,sizeof(out))>0&&
+               store.setup.operating_mode==CDI_R8_OP_OEM_LEARN);
+        frame("21,LEARN,START",in,sizeof(in));
+        assert(cdi_r5_protocol_handle(&p,in,out,sizeof(out))>0&&
+               learner.state==CDI_R8_LEARN_ACTIVE);
+        for(i=0u;i<24u;++i){tick+=period;
+            cdi_r8_oem_learn_pickup(&learner,tick,period,300u,&p.working);
+            cdi_r8_oem_learn_center_fire(&learner,tick+(period*5000u)/36000u,&store.setup);}
+        frame("22,LEARN,STOP",in,sizeof(in));
+        assert(cdi_r5_protocol_handle(&p,in,out,sizeof(out))>0&&store.oem_profile.valid);
+        frame("23,MODE,DIY,OEM_UNPLUGGED",in,sizeof(in));
+        assert(cdi_r5_protocol_handle(&p,in,out,sizeof(out))>0&&
+               store.setup.stage==CDI_R7_STAGE_FIRST_START&&store.setup.center_enabled);
+        frame("24,GET,CAPS",in,sizeof(in));
+        assert(cdi_r5_protocol_handle(&p,in,out,sizeof(out))>0&&strstr(out,"OEM_LEARN"));
+    }
     puts("cdi_r5_protocol: all tests passed");
     return 0;
 }

@@ -30,8 +30,8 @@ int main(void)
                           adc_for_volts(292u), adc_for_volts(292u),
                           true, true, false);
     assert(c.state == CDI_R5_CHG_REGULATING && c.duty_permille == 0u);
-    cdi_r5_charger_update(&c, 290u,
-                          adc_for_volts(305u), adc_for_volts(295u),
+    cdi_r5_charger_update(&c, 345u,
+                          adc_for_volts(375u), adc_for_volts(360u),
                           true, true, false);
     assert(c.state == CDI_R5_CHG_FAULT && c.fault_latched);
     assert(!cdi_r5_charger_clear_fault(&c, true, true));

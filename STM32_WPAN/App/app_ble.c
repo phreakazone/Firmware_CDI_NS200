@@ -225,7 +225,17 @@ uint8_t index_con_int, mutex;
  * Advertising Data
  */
 #if (P2P_SERVER1 != 0)
+/* Full name now fits in ADV_IND because the 128-bit service UUID has
+ * moved to the Scan Response packet (see Adv_Request()). This keeps the
+ * over-the-air name identical to NS200-CDI-R7 so legacy Android scan
+ * filters actually find the device. */
 static const char a_LocalName[] = {AD_TYPE_COMPLETE_LOCAL_NAME,'N','S','2','0','0','-','C','D','I','-','R','7'};
+/* 7a8f1000-6c9d-4e40-a45f-0b4b4e533230, little-endian over the air. */
+static const uint8_t a_CdiServiceUuid128[] = {
+  AD_TYPE_128_BIT_SERV_UUID_CMPLT_LIST,
+  0x30,0x32,0x53,0x4e,0x4b,0x0b,0x5f,0xa4,
+  0x40,0x4e,0x9d,0x6c,0x00,0x10,0x8f,0x7a
+};
 uint8_t a_ManufData[14] = {sizeof(a_ManufData)-1,
                            AD_TYPE_MANUFACTURER_SPECIFIC_DATA,
                            0x01,                               /*SKD version */
@@ -515,8 +525,10 @@ void APP_BLE_Init(void)
   /**
    * Make device discoverable
    */
-  BleApplicationContext.BleApplicationContext_legacy.advtServUUID[0] = NULL;
-  BleApplicationContext.BleApplicationContext_legacy.advtServUUIDlen = 0;
+  memcpy(BleApplicationContext.BleApplicationContext_legacy.advtServUUID,
+         a_CdiServiceUuid128, sizeof(a_CdiServiceUuid128));
+  BleApplicationContext.BleApplicationContext_legacy.advtServUUIDlen =
+      sizeof(a_CdiServiceUuid128);
 
   /* Initialize intervals for reconnexion without intervals update */
   AdvIntervalMin = CFG_FAST_CONN_ADV_INTERVAL_MIN;
@@ -727,7 +739,7 @@ SVCCTL_UserEvtFlowStatus_t SVCCTL_App_Notification(void *p_Pckt)
           break; /* ACI_GAP_LIMITED_DISCOVERABLE_VSEVT_CODE */
           
         case ACI_GAP_PASS_KEY_REQ_VSEVT_CODE:  
-          APP_DBG_MSG(">>== Unexpected PASS_KEY_REQ; R7.2 runs without bonding\n");
+          APP_DBG_MSG(">>== Unexpected PASS_KEY_REQ; R7.3 runs without bonding\n");
           ret = aci_gap_pass_key_resp(BleApplicationContext.BleApplicationContext_legacy.connectionHandle,
                                       CDI_BLE_PASSKEY);
           if (ret != BLE_STATUS_SUCCESS)
@@ -1205,7 +1217,10 @@ static void Adv_Request(APP_BLE_ConnStatus_t NewStatus)
   }
 
   BleApplicationContext.Device_Connection_Status = NewStatus;
-  /* Start Fast or Low Power Advertising */
+  /* Start Fast or Low Power Advertising.
+   * Service UUID is intentionally NOT passed here (0, 0): it now goes
+   * out in the Scan Response packet below so the full local name fits
+   * in ADV_IND. */
   ret = aci_gap_set_discoverable(ADV_IND,
                                  Min_Inter,
                                  Max_Inter,
@@ -1213,44 +1228,46 @@ static void Adv_Request(APP_BLE_ConnStatus_t NewStatus)
                                  NO_WHITE_LIST_USE, /* use white list */
                                  sizeof(a_LocalName),
                                  (uint8_t*) &a_LocalName,
-                                 BleApplicationContext.BleApplicationContext_legacy.advtServUUIDlen,
-                                 BleApplicationContext.BleApplicationContext_legacy.advtServUUID,
+                                 0,
+                                 0,
                                  0,
                                  0);
   if (ret != BLE_STATUS_SUCCESS)
   {
     APP_DBG_MSG("==>> aci_gap_set_discoverable - fail, result: 0x%x \n", ret);
+    return;
   }
-  else
+  APP_DBG_MSG("==>> aci_gap_set_discoverable - Success\n");
+
+  /* Send the 128-bit CDI service UUID in the Scan Response packet.
+   * Flags + complete local name already fill ADV_IND close to the
+   * 31-byte legacy advertising budget, so the UUID moves here instead
+   * of being dropped or truncating the name. */
   {
-    APP_DBG_MSG("==>> aci_gap_set_discoverable - Success\n");
+    uint8_t a_ScanRspData[1 + sizeof(a_CdiServiceUuid128)];
+    a_ScanRspData[0] = (uint8_t)sizeof(a_CdiServiceUuid128); /* AD length: type + 16-byte UUID */
+    memcpy(&a_ScanRspData[1], a_CdiServiceUuid128, sizeof(a_CdiServiceUuid128));
+
+    ret = hci_le_set_scan_response_data(sizeof(a_ScanRspData), a_ScanRspData);
+    if (ret != BLE_STATUS_SUCCESS)
+    {
+      APP_DBG_MSG("==>> hci_le_set_scan_response_data - fail, result: 0x%x \n", ret);
+    }
+    else
+    {
+      APP_DBG_MSG("==>> hci_le_set_scan_response_data - Success\n");
+    }
   }
 
-  /* Update Advertising data */
-  ret = aci_gap_update_adv_data(sizeof(a_ManufData), (uint8_t*) a_ManufData);
-  if (ret != BLE_STATUS_SUCCESS)
+  if (NewStatus == APP_BLE_FAST_ADV)
   {
-    if (NewStatus == APP_BLE_FAST_ADV)
-    {
-      APP_DBG_MSG("==>> Start Fast Advertising Failed , result: %d \n\r", ret);
-    }
-    else
-    {
-      APP_DBG_MSG("==>> Start Low Power Advertising Failed , result: %d \n\r", ret);
-    }
+    APP_DBG_MSG("==>> Success: Start Fast Advertising \n\r");
+    /* Start Timer to STOP ADV - TIMEOUT - and next Restart Low Power Advertising */
+    HW_TS_Start(BleApplicationContext.Advertising_mgr_timer_Id, INITIAL_ADV_TIMEOUT);
   }
   else
   {
-    if (NewStatus == APP_BLE_FAST_ADV)
-    {
-      APP_DBG_MSG("==>> Success: Start Fast Advertising \n\r");
-      /* Start Timer to STOP ADV - TIMEOUT - and next Restart Low Power Advertising */
-      HW_TS_Start(BleApplicationContext.Advertising_mgr_timer_Id, INITIAL_ADV_TIMEOUT);
-    }
-    else
-    {
-      APP_DBG_MSG("==>> Success: Start Low Power Advertising \n\r");
-    }
+    APP_DBG_MSG("==>> Success: Start Low Power Advertising \n\r");
   }
 
   return;
@@ -1335,6 +1352,10 @@ static void Adv_Cancel(void)
       APP_DBG_MSG("  \r\n\r");
       APP_DBG_MSG("** STOP ADVERTISING **  \r\n\r");
     }
+
+    /* Fast advertising expires after 60 s. Remain discoverable at a slower
+     * interval instead of becoming permanently invisible to Android. */
+    Adv_Request(APP_BLE_LP_ADV);
   }
 
   /* USER CODE BEGIN Adv_Cancel_2 */

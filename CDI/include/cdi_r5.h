@@ -10,10 +10,10 @@
 #define CDI_R5_MAP_SLOTS 4u
 #define CDI_R5_NAME_LEN 12u
 #define CDI_R5_STORE_MAGIC 0x37494443u /* "CDI7" little-endian */
-#define CDI_R5_STORE_VERSION 3u
+#define CDI_R5_STORE_VERSION 4u
 #define CDI_R5_ABSOLUTE_RPM_CAP 11500u
 #define CDI_R7_SETUP_MAGIC 0x37505553u
-#define CDI_R7_SETUP_VERSION 1u
+#define CDI_R7_SETUP_VERSION 2u
 
 typedef enum { CDI_R5_MODE_NORMAL = 0, CDI_R5_MODE_PRO = 1 } cdi_r5_mode_t;
 typedef enum { CDI_R5_LIMITER_SOFT = 0, CDI_R5_LIMITER_HARD = 1 } cdi_r5_limiter_t;
@@ -30,6 +30,26 @@ typedef enum { CDI_R7_STAGE_NEW=0, CDI_R7_STAGE_PICKUP_OK, CDI_R7_STAGE_TDC_SAVE
     CDI_R7_STAGE_FIRST_START, CDI_R7_STAGE_READY } cdi_r7_setup_stage_t;
 typedef enum { CDI_R7_EDGE_FALLING=0, CDI_R7_EDGE_RISING=1 } cdi_r7_pickup_edge_t;
 typedef enum { CDI_R7_FAN_OFF=0, CDI_R7_FAN_ON=1, CDI_R7_FAN_AUTO=2 } cdi_r7_fan_mode_t;
+typedef enum {
+    CDI_R8_OP_MANUAL_SETUP = 0,
+    CDI_R8_OP_OEM_LEARN = 1,
+    CDI_R8_OP_DIY = 2
+} cdi_r8_operating_mode_t;
+
+#define CDI_R8_LEARN_CELLS (CDI_R5_RPM_POINTS * CDI_R5_TPS_POINTS)
+
+typedef struct {
+    uint32_t magic;
+    uint16_t version;
+    uint16_t accepted_pulses;
+    uint16_t rejected_pulses;
+    uint16_t side_samples;
+    int16_t side_offset_cdeg;
+    int16_t advance_cdeg[CDI_R5_TPS_POINTS][CDI_R5_RPM_POINTS];
+    uint8_t samples[CDI_R5_TPS_POINTS][CDI_R5_RPM_POINTS];
+    uint8_t valid;
+    uint8_t reserved[3];
+} cdi_r8_oem_profile_t;
 
 typedef struct {
     uint32_t magic;
@@ -41,7 +61,8 @@ typedef struct {
     uint16_t tps_closed_adc, tps_open_adc;
     uint16_t first_start_hv_volts, first_start_rpm_limit;
     uint16_t first_start_advance_cap_cdeg;
-    uint8_t center_enabled, side_enabled, fan_mode, reserved;
+    uint8_t center_enabled, side_enabled, fan_mode, operating_mode;
+    uint8_t pro_enabled, diy_oem_unplug_confirmed, first_start_proven, reserved;
 } cdi_r7_setup_t;
 
 typedef struct {
@@ -60,7 +81,7 @@ typedef struct {
     int16_t side_offset_cdeg;
     uint16_t gate_pulse_us;
     uint16_t rpm_limit_override, advance_cap_cdeg, hv_target_override;
-    bool calibrated, physical_arm, pro_jumper, center_enabled, side_enabled;
+    bool calibrated, output_permission, pro_enabled, center_enabled, side_enabled;
 } cdi_r5_engine_config_t;
 
 typedef struct {
@@ -77,6 +98,7 @@ typedef struct {
     uint8_t active_slot, reserved;
     cdi_r5_map_t slots[CDI_R5_MAP_SLOTS];
     cdi_r7_setup_t setup;
+    cdi_r8_oem_profile_t oem_profile;
     uint32_t crc32;
 } cdi_r5_store_image_t;
 

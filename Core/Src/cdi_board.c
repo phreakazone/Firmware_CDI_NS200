@@ -16,7 +16,11 @@ static void gpio_init(void)
   g.Pin=GPIO_PIN_1|GPIO_PIN_2; g.Mode=GPIO_MODE_OUTPUT_PP; g.Pull=GPIO_NOPULL; g.Speed=GPIO_SPEED_FREQ_LOW; HAL_GPIO_Init(GPIOA,&g);
   g.Pin=GPIO_PIN_5 | GPIO_PIN_9; HAL_GPIO_Init(GPIOB,&g);
   g.Pin=GPIO_PIN_4; HAL_GPIO_Init(GPIOE,&g);
-  g.Pin=GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4; g.Mode=GPIO_MODE_INPUT; g.Pull=GPIO_PULLDOWN; HAL_GPIO_Init(GPIOB,&g);
+  /* PB2 no longer gates HV. PB3/PB4 are conditioned, passive OEM-fire taps. */
+  g.Pin=GPIO_PIN_2; g.Mode=GPIO_MODE_INPUT; g.Pull=GPIO_PULLDOWN; HAL_GPIO_Init(GPIOB,&g);
+  g.Pin=GPIO_PIN_3|GPIO_PIN_4; g.Mode=GPIO_MODE_IT_RISING; g.Pull=GPIO_PULLDOWN; HAL_GPIO_Init(GPIOB,&g);
+  HAL_NVIC_SetPriority(EXTI3_IRQn,1,1); HAL_NVIC_EnableIRQ(EXTI3_IRQn);
+  HAL_NVIC_SetPriority(EXTI4_IRQn,1,1); HAL_NVIC_EnableIRQ(EXTI4_IRQn);
   g.Pin=GPIO_PIN_10; g.Pull=GPIO_PULLUP; HAL_GPIO_Init(GPIOA,&g);
   g.Pin=GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7; g.Mode=GPIO_MODE_ANALOG; g.Pull=GPIO_NOPULL; HAL_GPIO_Init(GPIOA,&g);
   g.Pin=GPIO_PIN_0; HAL_GPIO_Init(GPIOB,&g);

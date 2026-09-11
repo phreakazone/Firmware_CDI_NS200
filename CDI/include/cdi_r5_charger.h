@@ -28,11 +28,11 @@ void cdi_r5_charger_update(cdi_r5_charger_t *charger,
                            uint16_t target_volts,
                            uint16_t adc_center,
                            uint16_t adc_side,
-                           bool physical_arm,
-                           bool jp_hv_present,
+                           bool output_permission,
+                           bool software_enable,
                            bool hardware_fault_low);
 bool cdi_r5_charger_clear_fault(cdi_r5_charger_t *charger,
                                 bool engine_stopped,
-                                bool jp_hv_present);
+                                bool software_enable);
 
 #endif

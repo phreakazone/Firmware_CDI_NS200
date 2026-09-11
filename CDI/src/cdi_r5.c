@@ -41,7 +41,7 @@ static void init_map(cdi_r5_map_t *map, const char *name,
     map->limiter_type = (uint8_t)CDI_R5_LIMITER_SOFT;
     map->rpm_limit = mode == CDI_R5_MODE_PRO ? 11000u : 9500u;
     map->soft_band_rpm = 400u;
-    map->hv_target_volts = mode == CDI_R5_MODE_PRO ? 290u : 285u;
+    map->hv_target_volts = mode == CDI_R5_MODE_PRO ? 345u : 285u;
     map->generation = 1u;
     map->rpm_count = mode == CDI_R5_MODE_PRO ? 16u : 8u;
     map->tps_count = mode == CDI_R5_MODE_PRO ? 8u : 4u;
@@ -92,8 +92,12 @@ void cdi_r5_load_defaults(cdi_r5_store_image_t *image)
         .trigger_angle_cdeg=6000u, .side_offset_cdeg=0,
         .pulses_per_revolution=1u, .gate_pulse_us=80u,
         .first_start_hv_volts=220u, .first_start_rpm_limit=3000u,
-        .first_start_advance_cap_cdeg=1000u, .fan_mode=CDI_R7_FAN_ON
+        .first_start_advance_cap_cdeg=1000u, .fan_mode=CDI_R7_FAN_ON,
+        .operating_mode=CDI_R8_OP_MANUAL_SETUP, .pro_enabled=0u,
+        .diy_oem_unplug_confirmed=0u, .first_start_proven=0u
     };
+    image->oem_profile.magic = 0x384D454Fu; /* "OEM8" */
+    image->oem_profile.version = 1u;
     cdi_r5_store_seal(image);
 }
 
@@ -108,7 +112,10 @@ cdi_r5_status_t cdi_r7_setup_validate(const cdi_r7_setup_t *s)
         s->gate_pulse_us > 150u || s->first_start_hv_volts < 180u ||
         s->first_start_hv_volts > 250u || s->first_start_rpm_limit != 3000u ||
         s->first_start_advance_cap_cdeg > 1000u || s->center_enabled > 1u ||
-        s->side_enabled > 1u || s->fan_mode > CDI_R7_FAN_AUTO) return CDI_R5_ERR_MAP;
+        s->side_enabled > 1u || s->fan_mode > CDI_R7_FAN_AUTO ||
+        s->operating_mode > CDI_R8_OP_DIY || s->pro_enabled > 1u ||
+        s->diy_oem_unplug_confirmed > 1u || s->first_start_proven > 1u)
+        return CDI_R5_ERR_MAP;
     if (s->tps_open_adc != 0u && s->tps_open_adc <= s->tps_closed_adc + 50u)
         return CDI_R5_ERR_MAP;
     if (s->stage < CDI_R7_STAGE_TDC_SAVED && (s->center_enabled || s->side_enabled))
@@ -143,7 +150,7 @@ cdi_r5_status_t cdi_r5_map_validate(const cdi_r5_map_t *map, bool pro_unlocked)
         max_rpm = 10500u; max_advance = 3600;
     } else {
         if (map->rpm_count != 16u || map->tps_count != 8u ||
-            map->hv_target_volts != 290u) return CDI_R5_ERR_MAP;
+            map->hv_target_volts != 345u) return CDI_R5_ERR_MAP;
         max_rpm = CDI_R5_ABSOLUTE_RPM_CAP; max_advance = 3600;
     }
     if (map->rpm_limit < 3000u || map->rpm_limit > max_rpm ||
@@ -167,6 +174,9 @@ cdi_r5_status_t cdi_r5_store_validate(const cdi_r5_store_image_t *image)
     if (cdi_r5_crc32(image, offsetof(cdi_r5_store_image_t, crc32)) != image->crc32)
         return CDI_R5_ERR_CRC;
     if (cdi_r7_setup_validate(&image->setup) != CDI_R5_OK) return CDI_R5_ERR_MAP;
+    if (image->oem_profile.magic != 0x384D454Fu ||
+        image->oem_profile.version != 1u || image->oem_profile.valid > 1u)
+        return CDI_R5_ERR_MAP;
     for (i = 0u; i < CDI_R5_MAP_SLOTS; ++i)
         if (cdi_r5_map_validate(&image->slots[i], true) != CDI_R5_OK)
             return CDI_R5_ERR_MAP;
@@ -230,10 +240,11 @@ cdi_r5_status_t cdi_r5_make_decision(const cdi_r5_engine_config_t *engine,
     if (engine == NULL || map == NULL || soft_phase == NULL || decision == NULL ||
         engine->timer_hz == 0u || engine->pulses_per_revolution == 0u ||
         period_ticks == 0u) return CDI_R5_ERR_ARGUMENT;
-    if (!engine->calibrated || !engine->physical_arm) return CDI_R5_ERR_DISARMED;
+    if (!engine->calibrated || !engine->output_permission)
+        return CDI_R5_ERR_DISARMED;
     effective = *map;
     if (engine->rpm_limit_override != 0u) effective.rpm_limit = engine->rpm_limit_override;
-    valid = cdi_r5_map_validate(&effective, engine->pro_jumper);
+    valid = cdi_r5_map_validate(&effective, engine->pro_enabled);
     if (valid != CDI_R5_OK) return valid;
     if (tps_permille > 1000u) tps_permille = 1000u;
     rpm_num = (uint64_t)engine->timer_hz * 60u;

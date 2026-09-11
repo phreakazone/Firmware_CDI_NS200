@@ -6,7 +6,7 @@
 #define HV_DIVIDER_BOTTOM_OHM 8200u
 #define ADC_FULL_SCALE 4095u
 #define ADC_REFERENCE_MV 3300u
-#define HARD_OVERVOLT_VOLTS 300u
+#define HARD_OVERVOLT_VOLTS 370u
 #define MAX_IMBALANCE_VOLTS 50u
 
 uint16_t cdi_r5_hv_adc_to_volts(uint16_t adc12)
@@ -38,14 +38,14 @@ void cdi_r5_charger_update(cdi_r5_charger_t *charger,
                            uint16_t target_volts,
                            uint16_t adc_center,
                            uint16_t adc_side,
-                           bool physical_arm,
-                           bool jp_hv_present,
+                           bool output_permission,
+                           bool software_enable,
                            bool hardware_fault_low)
 {
     uint16_t target = target_volts;
     uint16_t low, high, difference;
     if (charger == NULL) return;
-    if (target > 290u) target = 290u;
+    if (target > 345u) target = 345u;
     charger->center_volts = cdi_r5_hv_adc_to_volts(adc_center);
     charger->side_volts = cdi_r5_hv_adc_to_volts(adc_side);
     low = charger->center_volts < charger->side_volts ?
@@ -65,7 +65,7 @@ void cdi_r5_charger_update(cdi_r5_charger_t *charger,
         charger->duty_permille = 0u;
         return;
     }
-    if (!physical_arm || !jp_hv_present) {
+    if (!output_permission || !software_enable) {
         charger->state = CDI_R5_CHG_OFF;
         charger->duty_permille = 0u;
         return;
@@ -85,9 +85,9 @@ void cdi_r5_charger_update(cdi_r5_charger_t *charger,
 
 bool cdi_r5_charger_clear_fault(cdi_r5_charger_t *charger,
                                 bool engine_stopped,
-                                bool jp_hv_present)
+                                bool software_enable)
 {
-    if (charger == NULL || !engine_stopped || jp_hv_present) return false;
+    if (charger == NULL || !engine_stopped || software_enable) return false;
     charger->fault_latched = false;
     charger->state = CDI_R5_CHG_OFF;
     charger->duty_permille = 0u;

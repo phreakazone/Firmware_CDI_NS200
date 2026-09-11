@@ -44,14 +44,15 @@ _Min_Stack_Size = 0x1000 ; /* required amount of stack */
 /* Specify the memory areas */
 MEMORY
 {
-/* 0x0807E000-0x0807FFFF dicadangkan untuk dua salinan map CDI. */
-FLASH (rx)                 : ORIGIN = 0x08000000, LENGTH = 504K
+/* 0x0807D000 proof first-start; 0x0807E000-0x0807FFFF A/B config. */
+FLASH (rx)                 : ORIGIN = 0x08008000, LENGTH = 192K
 RAM1 (xrw)                 : ORIGIN = 0x20000008, LENGTH = 0x2FFF8
 RAM_SHARED (xrw)           : ORIGIN = 0x20030000, LENGTH = 10K
 }
 
 PROVIDE(__cdi_store_page0 = 0x0807E000);
 PROVIDE(__cdi_store_page1 = 0x0807F000);
+PROVIDE(__cdi_first_start_proof = 0x0807D000);
 
 /* Define output sections */
 SECTIONS
