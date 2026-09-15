@@ -5,15 +5,18 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#define CDI_R5_RPM_POINTS 16u
-#define CDI_R5_TPS_POINTS 8u
+#define CDI_R5_RPM_POINTS 32u
+#define CDI_R5_TPS_POINTS 16u
 #define CDI_R5_MAP_SLOTS 4u
-#define CDI_R5_NAME_LEN 12u
+#define CDI_R5_NAME_LEN 20u
 #define CDI_R5_STORE_MAGIC 0x37494443u /* "CDI7" little-endian */
-#define CDI_R5_STORE_VERSION 4u
-#define CDI_R5_ABSOLUTE_RPM_CAP 11500u
+#define CDI_R5_STORE_VERSION 5u
+#define CDI_R5_ABSOLUTE_RPM_CAP 30000u
+#define CDI_R9_ADVANCE_MIN_CDEG (-3000)
+#define CDI_R9_ADVANCE_MAX_CDEG 8000
+#define CDI_R9_MAX_PPR 12u
 #define CDI_R7_SETUP_MAGIC 0x37505553u
-#define CDI_R7_SETUP_VERSION 2u
+#define CDI_R7_SETUP_VERSION 3u
 
 typedef enum { CDI_R5_MODE_NORMAL = 0, CDI_R5_MODE_PRO = 1 } cdi_r5_mode_t;
 typedef enum { CDI_R5_LIMITER_SOFT = 0, CDI_R5_LIMITER_HARD = 1 } cdi_r5_limiter_t;
@@ -63,6 +66,12 @@ typedef struct {
     uint16_t first_start_advance_cap_cdeg;
     uint8_t center_enabled, side_enabled, fan_mode, operating_mode;
     uint8_t pro_enabled, diy_oem_unplug_confirmed, first_start_proven, reserved;
+    char profile_name[CDI_R5_NAME_LEN];
+    uint16_t profile_rpm_min, profile_rpm_max;
+    int16_t profile_advance_min_cdeg, profile_advance_max_cdeg;
+    uint16_t fan_on_cdeg, fan_off_cdeg;
+    uint16_t temp_adc[3];
+    int16_t temp_cdeg[3];
 } cdi_r7_setup_t;
 
 typedef struct {
@@ -81,6 +90,7 @@ typedef struct {
     int16_t side_offset_cdeg;
     uint16_t gate_pulse_us;
     uint16_t rpm_limit_override, advance_cap_cdeg, hv_target_override;
+    int16_t advance_trim_cdeg, advance_min_cdeg, advance_max_cdeg;
     bool calibrated, output_permission, pro_enabled, center_enabled, side_enabled;
 } cdi_r5_engine_config_t;
 
@@ -122,5 +132,9 @@ cdi_r5_status_t cdi_r5_live_set_cell(cdi_r5_map_t *map, uint8_t tps_index,
 cdi_r5_status_t cdi_r5_save_slot(cdi_r5_store_image_t *image, uint8_t slot,
                                  const cdi_r5_map_t *map, uint32_t engine_rpm,
                                  bool hv_enabled, bool pro_unlocked);
+bool cdi_r9_temperature_from_adc(const cdi_r7_setup_t *setup, uint16_t adc,
+                                 int16_t *temperature_cdeg);
+bool cdi_r9_fan_update(const cdi_r7_setup_t *setup, int16_t temperature_cdeg,
+                       bool temperature_valid, bool previous_output);
 
 #endif
