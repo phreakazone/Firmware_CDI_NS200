@@ -622,19 +622,22 @@ void UTIL_SEQ_Idle(void)
 
 void shci_notify_asynch_evt(void* pdata)
 {
-  UTIL_SEQ_SetTask(1<<CFG_TASK_SYSTEM_HCI_ASYNCH_EVT_ID, CFG_SCH_PRIO_0);
+  (void)pdata; /* <-- Tambahkan ini */
+  UTIL_SEQ_SetTask(1 << CFG_TASK_SYSTEM_HCI_ASYNCH_EVT_ID, CFG_SCH_PRIO_0);
   return;
 }
 
 void shci_cmd_resp_release(uint32_t flag)
 {
-  UTIL_SEQ_SetEvt(1<< CFG_IDLEEVT_SYSTEM_HCI_CMD_EVT_RSP_ID);
+  (void)flag; /* <-- Tambahkan ini */
+  UTIL_SEQ_SetEvt(1 << CFG_IDLEEVT_SYSTEM_HCI_CMD_EVT_RSP_ID);
   return;
 }
 
 void shci_cmd_resp_wait(uint32_t timeout)
 {
-  UTIL_SEQ_WaitEvt(1<< CFG_IDLEEVT_SYSTEM_HCI_CMD_EVT_RSP_ID);
+  (void)timeout; /* <-- Tambahkan ini */
+  UTIL_SEQ_WaitEvt(1 << CFG_IDLEEVT_SYSTEM_HCI_CMD_EVT_RSP_ID);
   return;
 }
 

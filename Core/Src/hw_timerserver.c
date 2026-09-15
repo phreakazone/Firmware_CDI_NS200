@@ -588,6 +588,7 @@ void HW_TS_RTC_Wakeup_Handler(void)
 
 void HW_TS_Init(HW_TS_InitMode_t TimerInitMode, RTC_HandleTypeDef *phrtc)
 {
+  (void)phrtc; /* <-- Tambahkan ini */
   uint8_t loop;
   uint32_t localmaxwakeuptimersetup;
 
@@ -882,6 +883,9 @@ uint16_t HW_TS_RTC_ReadLeftTicksToCount(void)
 
 __weak void HW_TS_RTC_Int_AppNot(uint32_t TimerProcessID, uint8_t TimerID, HW_TS_pTimerCb_t pTimerCallBack)
 {
+  (void)TimerProcessID; /* <-- Tambahkan ini */
+  (void)TimerID;         /* <-- Tambahkan ini */
+  (void)pTimerCallBack;  /* <-- Tambahkan ini */
   pTimerCallBack();
 
   return;

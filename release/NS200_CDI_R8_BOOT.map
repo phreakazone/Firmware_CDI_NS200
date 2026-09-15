@@ -87,23 +87,23 @@ Discarded input sections
  .debug_str     0x00000000       0x8e /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/crt0.o
  .ARM.attributes
                 0x00000000       0x20 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/crt0.o
- .text          0x00000000       0x1c CMakeFiles/NS200_CDI_R8_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
- .data          0x00000000        0x0 CMakeFiles/NS200_CDI_R8_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
- .bss           0x00000000        0x0 CMakeFiles/NS200_CDI_R8_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
- .text          0x00000000        0x0 CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/system_boot.c.obj
- .data          0x00000000        0x0 CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/system_boot.c.obj
- .bss           0x00000000        0x0 CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/system_boot.c.obj
+ .text          0x00000000       0x1c CMakeFiles/NS200_CDI_R9_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
+ .data          0x00000000        0x0 CMakeFiles/NS200_CDI_R9_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
+ .bss           0x00000000        0x0 CMakeFiles/NS200_CDI_R9_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
+ .text          0x00000000        0x0 CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/system_boot.c.obj
+ .data          0x00000000        0x0 CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/system_boot.c.obj
+ .bss           0x00000000        0x0 CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/system_boot.c.obj
  .text.SystemCoreClockUpdate
-                0x00000000       0x10 CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/system_boot.c.obj
+                0x00000000       0x10 CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/system_boot.c.obj
  .rodata.APBPrescTable
-                0x00000000       0x20 CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/system_boot.c.obj
+                0x00000000       0x20 CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/system_boot.c.obj
  .rodata.AHBPrescTable
-                0x00000000       0x40 CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/system_boot.c.obj
+                0x00000000       0x40 CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/system_boot.c.obj
  .data.SystemCoreClock
-                0x00000000        0x4 CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/system_boot.c.obj
- .text          0x00000000        0x0 CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/bootloader.c.obj
- .data          0x00000000        0x0 CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/bootloader.c.obj
- .bss           0x00000000        0x0 CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/bootloader.c.obj
+                0x00000000        0x4 CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/system_boot.c.obj
+ .text          0x00000000        0x0 CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/bootloader.c.obj
+ .data          0x00000000        0x0 CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/bootloader.c.obj
+ .bss           0x00000000        0x0 CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/bootloader.c.obj
  .data          0x00000000        0x0 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libg_nano.a(libc_a-init.o)
  .bss           0x00000000        0x0 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libg_nano.a(libc_a-init.o)
  .text          0x00000000       0xa4 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libg_nano.a(libc_a-memset.o)
@@ -535,9 +535,9 @@ Linker script and memory map
 LOAD /usr/lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crti.o
 LOAD /usr/lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crtbegin.o
 LOAD /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/crt0.o
-LOAD CMakeFiles/NS200_CDI_R8_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
-LOAD CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/system_boot.c.obj
-LOAD CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/bootloader.c.obj
+LOAD CMakeFiles/NS200_CDI_R9_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
+LOAD CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/system_boot.c.obj
+LOAD CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/bootloader.c.obj
 START GROUP
 LOAD /usr/lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/libgcc.a
 LOAD /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libg_nano.a
@@ -562,7 +562,7 @@ LOAD /usr/lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crtn.o
 .isr_vector     0x08000000      0x13c
                 0x08000000                        . = ALIGN (0x4)
  *(.isr_vector)
- .isr_vector    0x08000000      0x13c CMakeFiles/NS200_CDI_R8_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
+ .isr_vector    0x08000000      0x13c CMakeFiles/NS200_CDI_R9_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
                 0x08000000                g_pfnVectors
                 0x0800013c                        . = ALIGN (0x4)
 
@@ -570,12 +570,12 @@ LOAD /usr/lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crtn.o
                 0x0800013c                        . = ALIGN (0x4)
  *(.text*)
  .text.data_initializers
-                0x0800013c       0x18 CMakeFiles/NS200_CDI_R8_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
+                0x0800013c       0x18 CMakeFiles/NS200_CDI_R9_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
  .text.Reset_Handler
-                0x08000154       0x54 CMakeFiles/NS200_CDI_R8_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
+                0x08000154       0x54 CMakeFiles/NS200_CDI_R9_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
                 0x08000154                Reset_Handler
  .text.Default_Handler
-                0x080001a8        0x2 CMakeFiles/NS200_CDI_R8_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
+                0x080001a8        0x2 CMakeFiles/NS200_CDI_R9_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
                 0x080001a8                RTC_Alarm_IRQHandler
                 0x080001a8                EXTI2_IRQHandler
                 0x080001a8                DebugMon_Handler
@@ -651,17 +651,17 @@ LOAD /usr/lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crtn.o
                 0x080001a8                DMA2_Channel3_IRQHandler
  *fill*         0x080001aa        0x2 
  .text.SystemInit
-                0x080001ac       0x1c CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/system_boot.c.obj
+                0x080001ac       0x1c CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/system_boot.c.obj
                 0x080001ac                SystemInit
- .text.crc32    0x080001c8       0x30 CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/bootloader.c.obj
+ .text.crc32    0x080001c8       0x30 CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/bootloader.c.obj
  .text.flash_wait
-                0x080001f8       0x10 CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/bootloader.c.obj
+                0x080001f8       0x10 CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/bootloader.c.obj
  .text.erase_page
-                0x08000208       0x50 CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/bootloader.c.obj
+                0x08000208       0x50 CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/bootloader.c.obj
  .text.app_valid
-                0x08000258       0x4c CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/bootloader.c.obj
+                0x08000258       0x4c CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/bootloader.c.obj
  .text.startup.main
-                0x080002a4      0x170 CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/bootloader.c.obj
+                0x080002a4      0x170 CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/bootloader.c.obj
                 0x080002a4                main
  .text          0x08000414       0x50 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libg_nano.a(libc_a-init.o)
                 0x08000414                __libc_init_array
@@ -690,10 +690,10 @@ LOAD /usr/lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crtn.o
  .v4_bx         0x0800047c        0x0 linker stubs
 
 .iplt           0x0800047c        0x0
- .iplt          0x0800047c        0x0 CMakeFiles/NS200_CDI_R8_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
+ .iplt          0x0800047c        0x0 CMakeFiles/NS200_CDI_R9_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
 
 .rel.dyn        0x0800047c        0x0
- .rel.iplt      0x0800047c        0x0 CMakeFiles/NS200_CDI_R8_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
+ .rel.iplt      0x0800047c        0x0 CMakeFiles/NS200_CDI_R9_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
 
 .ARM.extab
  *(.ARM.extab*)
@@ -712,7 +712,7 @@ LOAD /usr/lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crtn.o
                 0x20000008                        _edata = .
 
 .igot.plt       0x20000008        0x0 load address 0x0800047c
- .igot.plt      0x20000008        0x0 CMakeFiles/NS200_CDI_R8_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
+ .igot.plt      0x20000008        0x0 CMakeFiles/NS200_CDI_R9_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
 
 .bss            0x20000008        0x0 load address 0x0800047c
                 0x20000008                        . = ALIGN (0x4)
@@ -741,7 +741,7 @@ LOAD /usr/lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crtn.o
 
 /DISCARD/
  *(.note.GNU-stack)
-OUTPUT(NS200_CDI_R8_BOOT.elf elf32-littlearm)
+OUTPUT(NS200_CDI_R9_BOOT.elf elf32-littlearm)
 LOAD linker stubs
 
 .ARM.attributes
@@ -749,79 +749,79 @@ LOAD linker stubs
  .ARM.attributes
                 0x00000000       0x22 /usr/lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crti.o
  .ARM.attributes
-                0x00000022       0x21 CMakeFiles/NS200_CDI_R8_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
+                0x00000022       0x21 CMakeFiles/NS200_CDI_R9_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
  .ARM.attributes
-                0x00000043       0x34 CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/system_boot.c.obj
+                0x00000043       0x34 CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/system_boot.c.obj
  .ARM.attributes
-                0x00000077       0x34 CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/bootloader.c.obj
+                0x00000077       0x34 CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/bootloader.c.obj
  .ARM.attributes
                 0x000000ab       0x34 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libg_nano.a(libc_a-init.o)
  .ARM.attributes
                 0x000000df       0x22 /usr/lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/crtn.o
 
 .comment        0x00000000       0x26
- .comment       0x00000000       0x26 CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/system_boot.c.obj
+ .comment       0x00000000       0x26 CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/system_boot.c.obj
                                  0x27 (size before relaxing)
- .comment       0x00000026       0x27 CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/bootloader.c.obj
+ .comment       0x00000026       0x27 CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/bootloader.c.obj
  .comment       0x00000026       0x27 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libg_nano.a(libc_a-init.o)
 
 .debug_line     0x00000000      0x93a
- .debug_line    0x00000000       0x83 CMakeFiles/NS200_CDI_R8_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
- .debug_line    0x00000083      0x158 CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/system_boot.c.obj
- .debug_line    0x000001db      0x641 CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/bootloader.c.obj
+ .debug_line    0x00000000       0x83 CMakeFiles/NS200_CDI_R9_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
+ .debug_line    0x00000083      0x158 CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/system_boot.c.obj
+ .debug_line    0x000001db      0x641 CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/bootloader.c.obj
  .debug_line    0x0000081c      0x11e /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libg_nano.a(libc_a-init.o)
 
 .debug_line_str
                 0x00000000       0x44
  .debug_line_str
-                0x00000000       0x44 CMakeFiles/NS200_CDI_R8_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
+                0x00000000       0x44 CMakeFiles/NS200_CDI_R9_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
 
 .debug_info     0x00000000      0xda8
- .debug_info    0x00000000       0x30 CMakeFiles/NS200_CDI_R8_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
- .debug_info    0x00000030      0x2be CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/system_boot.c.obj
- .debug_info    0x000002ee      0x9af CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/bootloader.c.obj
+ .debug_info    0x00000000       0x30 CMakeFiles/NS200_CDI_R9_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
+ .debug_info    0x00000030      0x2be CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/system_boot.c.obj
+ .debug_info    0x000002ee      0x9af CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/bootloader.c.obj
  .debug_info    0x00000c9d      0x10b /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libg_nano.a(libc_a-init.o)
 
 .debug_abbrev   0x00000000      0x4d2
- .debug_abbrev  0x00000000       0x24 CMakeFiles/NS200_CDI_R8_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
- .debug_abbrev  0x00000024       0xdd CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/system_boot.c.obj
- .debug_abbrev  0x00000101      0x308 CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/bootloader.c.obj
+ .debug_abbrev  0x00000000       0x24 CMakeFiles/NS200_CDI_R9_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
+ .debug_abbrev  0x00000024       0xdd CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/system_boot.c.obj
+ .debug_abbrev  0x00000101      0x308 CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/bootloader.c.obj
  .debug_abbrev  0x00000409       0xc9 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libg_nano.a(libc_a-init.o)
 
 .debug_aranges  0x00000000       0xb8
  .debug_aranges
-                0x00000000       0x30 CMakeFiles/NS200_CDI_R8_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
+                0x00000000       0x30 CMakeFiles/NS200_CDI_R9_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
  .debug_aranges
-                0x00000030       0x28 CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/system_boot.c.obj
+                0x00000030       0x28 CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/system_boot.c.obj
  .debug_aranges
-                0x00000058       0x40 CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/bootloader.c.obj
+                0x00000058       0x40 CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/bootloader.c.obj
  .debug_aranges
                 0x00000098       0x20 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libg_nano.a(libc_a-init.o)
 
 .debug_str      0x00000000      0x5b7
- .debug_str     0x00000000      0x5b7 CMakeFiles/NS200_CDI_R8_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
+ .debug_str     0x00000000      0x5b7 CMakeFiles/NS200_CDI_R9_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
                                  0x5e (size before relaxing)
- .debug_str     0x000005b7      0x22d CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/system_boot.c.obj
- .debug_str     0x000005b7      0x3e7 CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/bootloader.c.obj
+ .debug_str     0x000005b7      0x22d CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/system_boot.c.obj
+ .debug_str     0x000005b7      0x3e7 CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/bootloader.c.obj
  .debug_str     0x000005b7      0x1fa /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libg_nano.a(libc_a-init.o)
 
 .debug_rnglists
                 0x00000000       0xcb
  .debug_rnglists
-                0x00000000       0x1f CMakeFiles/NS200_CDI_R8_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
+                0x00000000       0x1f CMakeFiles/NS200_CDI_R9_BOOT.dir/Startup/startup_stm32wb55xx.s.obj
  .debug_rnglists
-                0x0000001f       0x19 CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/system_boot.c.obj
+                0x0000001f       0x19 CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/system_boot.c.obj
  .debug_rnglists
-                0x00000038       0x93 CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/bootloader.c.obj
+                0x00000038       0x93 CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/bootloader.c.obj
 
 .debug_frame    0x00000000       0xf0
- .debug_frame   0x00000000       0x30 CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/system_boot.c.obj
- .debug_frame   0x00000030       0x94 CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/bootloader.c.obj
+ .debug_frame   0x00000000       0x30 CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/system_boot.c.obj
+ .debug_frame   0x00000030       0x94 CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/bootloader.c.obj
  .debug_frame   0x000000c4       0x2c /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libg_nano.a(libc_a-init.o)
 
 .debug_loclists
                 0x00000000      0x342
  .debug_loclists
-                0x00000000      0x2dd CMakeFiles/NS200_CDI_R8_BOOT.dir/Bootloader/bootloader.c.obj
+                0x00000000      0x2dd CMakeFiles/NS200_CDI_R9_BOOT.dir/Bootloader/bootloader.c.obj
  .debug_loclists
                 0x000002dd       0x65 /usr/lib/gcc/arm-none-eabi/13.2.1/../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libg_nano.a(libc_a-init.o)

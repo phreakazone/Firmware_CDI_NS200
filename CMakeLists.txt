@@ -1,20 +1,30 @@
 cmake_minimum_required(VERSION 3.22)
-project(NS200_CDI_R8 C ASM)
+project(NS200_CDI_R9 C ASM)
 set(CMAKE_C_STANDARD 11)
 
 set(CPU_FLAGS -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard)
-set(APP_TARGET NS200_CDI_R8_APP)
-set(BOOT_TARGET NS200_CDI_R8_BOOT)
+set(APP_TARGET NS200_CDI_R9_APP)
+set(BOOT_TARGET NS200_CDI_R9_BOOT)
 add_executable(${APP_TARGET})
 set_target_properties(${APP_TARGET} PROPERTIES SUFFIX ".elf")
 target_compile_options(${APP_TARGET} PRIVATE ${CPU_FLAGS} -ffunction-sections -fdata-sections -Wall -Wextra $<$<CONFIG:Debug>:-Og> $<$<CONFIG:Debug>:-g3>)
-target_link_options(${APP_TARGET} PRIVATE ${CPU_FLAGS} -T${CMAKE_CURRENT_SOURCE_DIR}/STM32WB55CGUX_FLASH.ld -Wl,--gc-sections,-Map=${APP_TARGET}.map --specs=nano.specs --specs=nosys.specs)
+target_link_options(${APP_TARGET} PRIVATE ${CPU_FLAGS} 
+    -T${CMAKE_CURRENT_SOURCE_DIR}/STM32WB55CGUX_FLASH.ld 
+    -Wl,--gc-sections,-Map=${APP_TARGET}.map 
+    --specs=nano.specs 
+    --specs=nosys.specs
+)
 target_compile_definitions(${APP_TARGET} PRIVATE USE_HAL_DRIVER STM32WB55xx CDI_STM32_HAL_EXAMPLE)
 
 set(HAL ThirdParty/Drivers/STM32WBxx_HAL_Driver)
 set(WPAN ThirdParty/Middlewares/ST/STM32_WPAN)
+
+# Header aplikasi kita sendiri
 target_include_directories(${APP_TARGET} PRIVATE
- Core/Inc STM32_WPAN/App CDI/include
+ Core/Inc STM32_WPAN/App CDI/include)
+
+# Header pustaka vendor ST ditandai SYSTEM agar compiler mengabaikan warning bawaan ST
+target_include_directories(${APP_TARGET} SYSTEM PRIVATE
  ${HAL}/Inc ${HAL}/Inc/Legacy ThirdParty/Drivers/CMSIS/Include
  ThirdParty/Drivers/CMSIS/Device/ST/STM32WBxx/Include
  ThirdParty/Utilities/lpm/tiny_lpm ThirdParty/Utilities/sequencer
@@ -45,6 +55,14 @@ target_sources(${APP_TARGET} PRIVATE
  ${WPAN}/ble/core/auto/ble_hal_aci.c ${WPAN}/ble/core/auto/ble_hci_le.c ${WPAN}/ble/core/auto/ble_l2cap_aci.c
  ${WPAN}/ble/svc/Src/svc_ctl.c)
 
+# Supresi warning unused-parameter hanya khusus pada file vendor ST
+set_source_files_properties(
+ ${HAL}/Src/stm32wbxx_hal_ipcc.c
+ ${HAL}/Src/stm32wbxx_hal_pwr_ex.c
+ ${WPAN}/utilities/stm_queue.c
+ PROPERTIES COMPILE_OPTIONS "-Wno-unused-parameter"
+)
+
 add_custom_command(TARGET ${APP_TARGET} POST_BUILD
  COMMAND ${CMAKE_SIZE} $<TARGET_FILE:${APP_TARGET}>
  COMMAND ${CMAKE_OBJCOPY} -O ihex $<TARGET_FILE:${APP_TARGET}> ${APP_TARGET}.hex
@@ -53,13 +71,18 @@ add_custom_command(TARGET ${APP_TARGET} POST_BUILD
 add_executable(${BOOT_TARGET} Startup/startup_stm32wb55xx.s
  Bootloader/system_boot.c Bootloader/bootloader.c)
 set_target_properties(${BOOT_TARGET} PROPERTIES SUFFIX ".elf")
-target_include_directories(${BOOT_TARGET} PRIVATE CDI/include
+target_include_directories(${BOOT_TARGET} PRIVATE CDI/include)
+target_include_directories(${BOOT_TARGET} SYSTEM PRIVATE
  ThirdParty/Drivers/CMSIS/Include ThirdParty/Drivers/CMSIS/Device/ST/STM32WBxx/Include)
 target_compile_definitions(${BOOT_TARGET} PRIVATE STM32WB55xx)
 target_compile_options(${BOOT_TARGET} PRIVATE ${CPU_FLAGS} -ffunction-sections -fdata-sections -Wall -Wextra -Os)
 target_link_options(${BOOT_TARGET} PRIVATE ${CPU_FLAGS}
- -T${CMAKE_CURRENT_SOURCE_DIR}/Bootloader/STM32WB55_BOOT.ld
- -Wl,--gc-sections,-Map=${BOOT_TARGET}.map --specs=nano.specs --specs=nosys.specs)
+    -T${CMAKE_CURRENT_SOURCE_DIR}/Bootloader/STM32WB55_BOOT.ld
+    -Wl,--gc-sections,-Map=${BOOT_TARGET}.map 
+    --specs=nano.specs 
+    --specs=nosys.specs
+)
+
 add_custom_command(TARGET ${BOOT_TARGET} POST_BUILD
  COMMAND ${CMAKE_SIZE} $<TARGET_FILE:${BOOT_TARGET}>
  COMMAND ${CMAKE_OBJCOPY} -O ihex $<TARGET_FILE:${BOOT_TARGET}> ${BOOT_TARGET}.hex
@@ -70,8 +93,8 @@ add_custom_target(factory_image ALL
  COMMAND ${PYTHON3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tools/make_factory_image.py
    ${CMAKE_CURRENT_BINARY_DIR}/${BOOT_TARGET}.bin
    ${CMAKE_CURRENT_BINARY_DIR}/${APP_TARGET}.bin
-   ${CMAKE_CURRENT_BINARY_DIR}/NS200_CDI_R8_FACTORY.bin
+   ${CMAKE_CURRENT_BINARY_DIR}/NS200_CDI_R9_FACTORY.bin
  COMMAND ${CMAKE_OBJCOPY} -I binary -O ihex --change-addresses 0x08000000
-   ${CMAKE_CURRENT_BINARY_DIR}/NS200_CDI_R8_FACTORY.bin
-   ${CMAKE_CURRENT_BINARY_DIR}/NS200_CDI_R8_FACTORY.hex
+   ${CMAKE_CURRENT_BINARY_DIR}/NS200_CDI_R9_FACTORY.bin
+   ${CMAKE_CURRENT_BINARY_DIR}/NS200_CDI_R9_FACTORY.hex
  DEPENDS ${BOOT_TARGET} ${APP_TARGET})

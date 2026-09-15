@@ -160,7 +160,7 @@ typedef struct
 /* USER CODE END PTD */
 
 /* Private defines -----------------------------------------------------------*/
-#define APPBLE_GAP_DEVICE_NAME_LENGTH 12
+#define APPBLE_GAP_DEVICE_NAME_LENGTH 9
 #define FAST_ADV_TIMEOUT               (30*1000*1000/CFG_TS_TICK_VAL) /**< 30s */
 #define INITIAL_ADV_TIMEOUT            (60*1000*1000/CFG_TS_TICK_VAL) /**< 60s */
 
@@ -227,9 +227,9 @@ uint8_t index_con_int, mutex;
 #if (P2P_SERVER1 != 0)
 /* Full name now fits in ADV_IND because the 128-bit service UUID has
  * moved to the Scan Response packet (see Adv_Request()). This keeps the
- * over-the-air name identical to NS200-CDI-R7 so legacy Android scan
+ * over-the-air name identical to NS200-CDI so legacy Android scan
  * filters actually find the device. */
-static const char a_LocalName[] = {AD_TYPE_COMPLETE_LOCAL_NAME,'N','S','2','0','0','-','C','D','I','-','R','7'};
+static const char a_LocalName[] = {AD_TYPE_COMPLETE_LOCAL_NAME,'N','S','2','0','0','-','C','D','I'};
 /* 7a8f1000-6c9d-4e40-a45f-0b4b4e533230, little-endian over the air. */
 static const uint8_t a_CdiServiceUuid128[] = {
   AD_TYPE_128_BIT_SERV_UUID_CMPLT_LIST,
@@ -422,7 +422,9 @@ void APP_BLE_Init(void)
      CFG_BLE_RX_PATH_COMPENS,
      CFG_BLE_CORE_VERSION,
      CFG_BLE_OPTIONS_EXT,
-     CFG_BLE_MAX_ADD_EATT_BEARERS
+     CFG_BLE_MAX_ADD_EATT_BEARERS,
+     0,
+     0
     }
   };
 
@@ -1061,7 +1063,7 @@ static void Ble_Hci_Gap_Gatt_Init(void)
 
   if (role > 0)
   {
-    const char *name = "NS200-CDI-R7";
+    const char *name = "NS200-CDI";
     ret = aci_gap_init(role,
                        CFG_PRIVACY,
                        APPBLE_GAP_DEVICE_NAME_LENGTH,
@@ -1447,22 +1449,22 @@ static void Connection_Interval_Update_Req(void)
  *************************************************************/
 void hci_notify_asynch_evt(void* p_Data)
 {
+  (void)p_Data; /* <-- Tambahkan baris ini */
   UTIL_SEQ_SetTask(1 << CFG_TASK_HCI_ASYNCH_EVT_ID, CFG_SCH_PRIO_0);
-
   return;
 }
 
 void hci_cmd_resp_release(uint32_t Flag)
 {
+  (void)Flag; /* <-- Tambahkan baris ini */
   UTIL_SEQ_SetEvt(1 << CFG_IDLEEVT_HCI_CMD_EVT_RSP_ID);
-
   return;
 }
 
 void hci_cmd_resp_wait(uint32_t Timeout)
 {
+  (void)Timeout; /* <-- Tambahkan baris ini */
   UTIL_SEQ_WaitEvt(1 << CFG_IDLEEVT_HCI_CMD_EVT_RSP_ID);
-
   return;
 }
 

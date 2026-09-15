@@ -72,8 +72,9 @@ typedef PACKED_STRUCT
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
+/* USER CODE BEGIN PV */
 PLACE_IN_SECTION("MB_MEM2") ALIGN(4) static SHCI_C2_DEBUG_TracesConfig_t APPD_TracesConfig={0, 0, 0, 0};
-PLACE_IN_SECTION("MB_MEM2") ALIGN(4) static SHCI_C2_DEBUG_GeneralConfig_t APPD_GeneralConfig={BLE_DTB_CFG, SYS_DBG_CFG1, {0, 0}};
+PLACE_IN_SECTION("MB_MEM2") ALIGN(4) static SHCI_C2_DEBUG_GeneralConfig_t APPD_GeneralConfig = {0};
 
 #ifdef CFG_DEBUG_TRACE_UART
 #if(CFG_HW_LPUART1_ENABLED == 1)
@@ -225,7 +226,7 @@ void APPD_EnableCPU2( void )
 /* USER CODE BEGIN APPD_EnableCPU2 */
   SHCI_C2_DEBUG_Init_Cmd_Packet_t DebugCmdPacket =
   {
-    {{0,0,0}},                            /**< Does not need to be initialized */
+    {{0,0,0}},
     {(uint8_t *)aGpioConfigList,
     (uint8_t *)&APPD_TracesConfig,
     (uint8_t *)&APPD_GeneralConfig,
@@ -238,7 +239,7 @@ void APPD_EnableCPU2( void )
   TL_TRACES_Init( );
 
   /** GPIO DEBUG Initialization */
-  SHCI_C2_DEBUG_Init( &DebugCmdPacket  );
+  SHCI_C2_DEBUG_Init( &DebugCmdPacket );
 
 /* USER CODE END APPD_EnableCPU2 */
   return;

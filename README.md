@@ -79,12 +79,12 @@ sebelum mengaktifkan output.
 
 ## Flash pertama (USB DFU atau SWD)
 
-- `NS200_CDI_R8_FACTORY.bin` @ `0x08000000`
-- atau `NS200_CDI_R8_FACTORY.hex` (alamat sudah tertanam)
+- `NS200_CDI_R9_FACTORY.bin` @ `0x08000000`
+- atau `NS200_CDI_R9_FACTORY.hex` (alamat sudah tertanam)
 
 ## Update berikutnya dari Android/BLE
 
-- `NS200_CDI_R8_APP.bin`
+- `NS200_CDI_R9_APP.bin`
 
 ⚠️ Jangan kirim `FACTORY.bin` melalui OTA.
 

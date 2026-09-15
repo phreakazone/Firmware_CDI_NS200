@@ -642,7 +642,7 @@ size_t cdi_r5_protocol_handle(cdi_r5_protocol_t *p, const char *frame,
     }
 
     if (strcmp(cmd,"MAP")==0) {
-        const char *op = save;
+        char *op = save;
         if (op != NULL && !strncmp(op, "SELECT,", 7)) {
             unsigned long slot;
             char *select_save = op;

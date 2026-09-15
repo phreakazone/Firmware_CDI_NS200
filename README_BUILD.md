@@ -9,14 +9,14 @@ perlu Generate Code ulang.
 3. Pilih `File > Open Folder` dan buka tepat folder firmware R8 ini.
 4. Tekan `Ctrl+Shift+P`, pilih `CMake: Select Configure Preset`, lalu `Debug`.
 5. Tekan `Ctrl+Shift+B`, pilih `R8: Build Debug`. Hasil utama:
-   `NS200_CDI_R8_FACTORY.bin`/`.hex` untuk flash pertama dan
-   `NS200_CDI_R8_APP.bin` untuk update BLE berikutnya.
+   `NS200_CDI_R9_FACTORY.bin`/`.hex` untuk flash pertama dan
+   `NS200_CDI_R9_APP.bin` untuk update BLE berikutnya.
 6. Flash normal tidak memerlukan ST-Link. Cabut daya lain dari board, tahan
    tombol `BOOT0`, tekan-lepas `NRST`, lalu lepaskan `BOOT0`. Sambungkan
    micro-USB ke komputer. Di CubeProgrammer pilih `USB`, tekan refresh sampai
    `USB1` muncul, lalu Connect.
 7. Jalankan task `R8: Flash factory BIN via USB DFU`, atau pilih
-   `NS200_CDI_R8_FACTORY.bin` pada GUI lalu `Download + Verify` dengan alamat
+   `NS200_CDI_R9_FACTORY.bin` pada GUI lalu `Download + Verify` dengan alamat
    `0x08000000`. Jika USB1 belum muncul,
    ulangi urutan BOOT0/NRST dan pastikan kabel USB adalah kabel data.
 8. ST-Link V2 compatible hanya fallback/debug jika USB DFU tidak terdeteksi.

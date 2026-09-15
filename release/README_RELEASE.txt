@@ -12,16 +12,16 @@ PERBAIKAN DI BUILD INI
   Lihat STM32_WPAN/App/app_ble.c, fungsi Adv_Request().
 
 FLASH PERTAMA (USB DFU atau SWD)
-  NS200_CDI_R8_FACTORY.bin @ 0x08000000
-  atau NS200_CDI_R8_FACTORY.hex (alamat sudah tertanam)
+  NS200_CDI_R9_FACTORY.bin @ 0x08000000
+  atau NS200_CDI_R9_FACTORY.hex (alamat sudah tertanam)
 
 UPDATE BERIKUTNYA DARI ANDROID/BLE
-  NS200_CDI_R8_APP.bin
+  NS200_CDI_R9_APP.bin
   Jangan kirim FACTORY.bin melalui OTA.
 
 DEBUG
-  NS200_CDI_R8_APP.elf / .map
-  NS200_CDI_R8_BOOT.elf / .map
+  NS200_CDI_R9_APP.elf / .map
+  NS200_CDI_R9_BOOT.elf / .map
 
 VERIFIKASI BUILD
   GNU Arm Embedded 13.2.1, Cortex-M4 hard-float
