@@ -1,0 +1,46 @@
+diff --git a/CDI/examples/stm32wb55_r5_hal_integration.c b/CDI/examples/stm32wb55_r5_hal_integration.c
+index 1d6ea2b..98aed00 100644
+--- a/CDI/examples/stm32wb55_r5_hal_integration.c
++++ b/CDI/examples/stm32wb55_r5_hal_integration.c
+@@ -38,6 +38,7 @@ static uint8_t last_limiter_state;
+ static uint16_t telemetry_sequence, applied_edge=0xffffu;
+ static uint32_t first_start_good_ms;
+ static bool first_start_proof_written;
++static bool fan_on; /* status kipas hasil cdi_r9_fan_update(), untuk histeresis lintas-tick */
+ static uint16_t ota_reboot_ms;
+ 
+ /* Ganti dengan dua halaman flash yang aman. Jangan menulis flash saat mesin hidup. */
+@@ -229,7 +230,14 @@ void R5_OneMillisecond(void)
+     protocol.hv_enabled = charger.duty_permille!=0u || protocol.hv_center>=30u || protocol.hv_side>=30u;
+     if (!engine.output_permission || fault_low || protocol.strobe_active)
+         force_safe();
+-    HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,store.setup.fan_mode==CDI_R7_FAN_OFF?GPIO_PIN_RESET:GPIO_PIN_SET);
++    /* FIX: sebelumnya baris ini cuma cek fan_mode==OFF (ON dan AUTO
++     * diperlakukan sama), sehingga cdi_r9_temperature_from_adc()/
++     * cdi_r9_fan_update() tidak pernah terpanggil dan histeresis+fail-safe
++     * NTC mati total. adc_dma[1] (PA4/NTC) -> suhu -> keputusan fan -> relay. */
++    int16_t temperature_cdeg = 0;
++    bool temperature_valid = cdi_r9_temperature_from_adc(&store.setup, adc_dma[1], &temperature_cdeg);
++    fan_on = cdi_r9_fan_update(&store.setup, temperature_cdeg, temperature_valid, fan_on);
++    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, fan_on ? GPIO_PIN_SET : GPIO_PIN_RESET);
+     if(store.setup.stage!=CDI_R7_STAGE_FIRST_START){first_start_good_ms=0u;protocol.first_start_seconds=0u;}
+     else if(protocol.rpm>=500u&&protocol.rpm<=3200u&&!charger.fault_latched){
+         if(first_start_good_ms<60000u)++first_start_good_ms;
+@@ -274,7 +282,7 @@ void R5_OneMillisecond(void)
+         t.battery_centivolts = (uint16_t)(battery_mv / 10u);
+         t.hv_center_volts = protocol.hv_center;
+         t.hv_side_volts = protocol.hv_side;
+-        t.temperature_cdeg = INT16_MIN; /* isi setelah kurva NTC varian motor dikalibrasi */
++        t.temperature_cdeg = temperature_valid ? temperature_cdeg : INT16_MIN;
+         t.active_slot = store.active_slot;
+         t.limiter_state = last_limiter_state;
+         t.flags = (engine.output_permission ? CDI_R5_TF_ARM : 0u) |
+@@ -288,7 +296,7 @@ void R5_OneMillisecond(void)
+         if (!battery_ok) t.fault_bits |= CDI_R5_FAULT_BATTERY;
+         if (!engine.calibrated) t.fault_bits |= CDI_R5_FAULT_CALIBRATION;
+         if (charger.fault_latched) t.fault_bits |= CDI_R5_FAULT_HV_OVERVOLT;
+-        t.setup_stage=store.setup.stage;t.output_flags=(store.setup.center_enabled?CDI_R7_OF_CENTER:0u)|(store.setup.side_enabled?CDI_R7_OF_SIDE:0u)|(protocol.strobe_active?CDI_R7_OF_STROBE:0u)|(store.setup.fan_mode!=CDI_R7_FAN_OFF?CDI_R7_OF_FAN:0u);t.trigger_angle_cdeg=protocol.setup_trigger_cdeg;t.pickup_quality=protocol.pickup_quality>100u?100u:(uint8_t)protocol.pickup_quality;t.first_start_seconds=protocol.first_start_seconds>255u?255u:(uint8_t)protocol.first_start_seconds;
++        t.setup_stage=store.setup.stage;t.output_flags=(store.setup.center_enabled?CDI_R7_OF_CENTER:0u)|(store.setup.side_enabled?CDI_R7_OF_SIDE:0u)|(protocol.strobe_active?CDI_R7_OF_STROBE:0u)|(fan_on?CDI_R7_OF_FAN:0u);t.trigger_angle_cdeg=protocol.setup_trigger_cdeg;t.pickup_quality=protocol.pickup_quality>100u?100u:(uint8_t)protocol.pickup_quality;t.first_start_seconds=protocol.first_start_seconds>255u?255u:(uint8_t)protocol.first_start_seconds;
+         n = cdi_r5_ble_encode_telemetry(&t, packet, sizeof(packet));
+         if (n != 0u && R5_BleIsConnected())
+             R5_BleNotifyTelemetry(packet, (uint16_t)n);
